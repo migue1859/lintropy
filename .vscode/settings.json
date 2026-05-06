@@ -1,7 +1,0 @@
-{
-  "yaml.schemas": {
-    "./editors/schemas/lintropy.schema.json": "lintropy.yaml",
-    "./editors/schemas/lintropy-rule.schema.json": ".lintropy/**/*.rule.yaml",
-    "./editors/schemas/lintropy-rules.schema.json": ".lintropy/**/*.rules.yaml"
-  }
-}
